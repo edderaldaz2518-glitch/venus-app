@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <meta name="theme-color" content="#0b0b0f">
-  <meta name="description" content="VenuS — Conecta, descubre y encuentra nuevos espacios.">
 
-  <title>VenuS</title>
+  <title>VenuS — Conecta. Descubre. Vive.</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     * {
@@ -23,136 +23,202 @@
       min-height: 100vh;
     }
 
-    .app {
-      min-height: 100vh;
-      display: flex;
-      flex-direction: column;
+    .container {
+      width: 100%;
+      max-width: 1100px;
+      margin: auto;
+      padding: 24px;
     }
 
     header {
-      padding: 22px 20px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid #24242d;
-      background: #0b0b0f;
+      padding: 10px 0 30px;
     }
 
     .logo {
       font-size: 28px;
-      font-weight: 700;
-      letter-spacing: 1px;
+      font-weight: 800;
+      letter-spacing: -1px;
     }
 
     .logo span {
       color: #9b5cff;
     }
 
-    .menu {
-      width: 42px;
-      height: 42px;
-      border-radius: 50%;
-      border: 1px solid #353541;
-      background: #17171f;
-      color: white;
-      font-size: 20px;
-    }
-
-    main {
-      width: 100%;
-      max-width: 700px;
-      margin: auto;
-      padding: 55px 24px 100px;
+    .age {
+      font-size: 12px;
+      color: #aaa;
+      border: 1px solid #333;
+      padding: 7px 10px;
+      border-radius: 20px;
     }
 
     .hero {
       text-align: center;
+      padding: 70px 10px 50px;
     }
 
     .hero h1 {
-      font-size: 42px;
-      line-height: 1.1;
-      margin-bottom: 18px;
+      font-size: clamp(40px, 9vw, 76px);
+      line-height: 1;
+      margin-bottom: 20px;
     }
 
     .hero h1 span {
-      color: #a66cff;
+      color: #9b5cff;
     }
 
     .hero p {
-      color: #b5b5c0;
-      font-size: 17px;
+      max-width: 600px;
+      margin: auto;
+      color: #aaa;
+      font-size: 18px;
       line-height: 1.6;
-      margin-bottom: 35px;
     }
 
     .buttons {
       display: flex;
-      flex-direction: column;
-      gap: 13px;
-      max-width: 360px;
-      margin: auto;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 32px;
     }
 
-    button.primary,
-    button.secondary {
-      width: 100%;
-      padding: 16px;
-      border-radius: 14px;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    button.primary {
+    button {
       border: none;
+      cursor: pointer;
+      font-size: 16px;
+      font-weight: 700;
+      border-radius: 12px;
+      padding: 14px 24px;
+    }
+
+    .primary {
       background: #9b5cff;
       color: white;
     }
 
-    button.secondary {
-      border: 1px solid #383844;
-      background: #15151c;
+    .secondary {
+      background: transparent;
       color: white;
+      border: 1px solid #444;
     }
 
     .features {
-      margin-top: 60px;
       display: grid;
-      grid-template-columns: 1fr;
-      gap: 14px;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 30px;
     }
 
-    .feature {
-      background: #15151c;
-      border: 1px solid #272732;
+    .card {
+      background: #14141a;
+      border: 1px solid #25252d;
       border-radius: 18px;
-      padding: 22px;
+      padding: 28px;
     }
 
-    .feature h3 {
-      margin-bottom: 8px;
-      font-size: 17px;
+    .card h3 {
+      margin-bottom: 10px;
     }
 
-    .feature p {
-      color: #9999a6;
+    .card p {
+      color: #999;
       line-height: 1.5;
-      font-size: 14px;
     }
 
     footer {
-      margin-top: auto;
-      padding: 20px;
       text-align: center;
-      color: #686874;
-      font-size: 12px;
-      border-top: 1px solid #20202a;
+      color: #666;
+      padding: 50px 0 25px;
+      font-size: 13px;
     }
 
-    @media (min-width: 600px) {
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,.78);
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 100;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-box {
+      width: 100%;
+      max-width: 420px;
+      background: #15151c;
+      border: 1px solid #292933;
+      border-radius: 20px;
+      padding: 28px;
+    }
+
+    .modal-box h2 {
+      margin-bottom: 8px;
+    }
+
+    .modal-box p {
+      color: #999;
+      font-size: 14px;
+      margin-bottom: 20px;
+    }
+
+    input {
+      width: 100%;
+      padding: 14px;
+      margin-bottom: 12px;
+      background: #0d0d12;
+      color: white;
+      border: 1px solid #333;
+      border-radius: 10px;
+      outline: none;
+    }
+
+    input:focus {
+      border-color: #9b5cff;
+    }
+
+    .form-button {
+      width: 100%;
+      margin-top: 8px;
+    }
+
+    .close {
+      background: transparent;
+      color: #aaa;
+      float: right;
+      padding: 0;
+      font-size: 22px;
+    }
+
+    .message {
+      margin-top: 15px;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .success {
+      color: #70e0a0;
+    }
+
+    .error {
+      color: #ff7777;
+    }
+
+    @media (max-width: 700px) {
       .features {
-        grid-template-columns: repeat(3, 1fr);
+        grid-template-columns: 1fr;
+      }
+
+      .hero {
+        padding-top: 45px;
       }
     }
   </style>
@@ -160,63 +226,57 @@
 
 <body>
 
-  <div class="app">
+  <div class="container">
 
     <header>
       <div class="logo">Venu<span>S</span></div>
-      <button class="menu" aria-label="Menú">☰</button>
+      <div class="age">18+</div>
     </header>
 
     <main>
 
       <section class="hero">
-
-        <h1>
-          Conecta.<br>
-          Descubre.<br>
-          <span>Vive VenuS.</span>
-        </h1>
+        <h1>Conecta.<br><span>Descubre.</span><br>Vive VenuS.</h1>
 
         <p>
-          Una nueva forma de conocer personas, descubrir perfiles
-          y encontrar espacios pensados para conectar.
+          Una nueva forma de conectar con personas, descubrir nuevas experiencias
+          y formar parte de una comunidad creada para adultos.
         </p>
 
         <div class="buttons">
-          <button class="primary" onclick="alert('Próximamente: crear cuenta')">
+          <button class="primary" onclick="openModal('register')">
             Crear cuenta
           </button>
 
-          <button class="secondary" onclick="alert('Próximamente: iniciar sesión')">
+          <button class="secondary" onclick="openModal('login')">
             Iniciar sesión
           </button>
         </div>
-
       </section>
 
       <section class="features">
 
-        <div class="feature">
-          <h3>✦ Descubre</h3>
+        <div class="card">
+          <h3>Descubre</h3>
           <p>
-            Explora perfiles y descubre nuevas conexiones
-            de acuerdo con tus intereses.
+            Encuentra personas, publicaciones y experiencias
+            que coincidan contigo.
           </p>
         </div>
 
-        <div class="feature">
-          <h3>♡ Conecta</h3>
+        <div class="card">
+          <h3>Conecta</h3>
           <p>
-            Crea tu perfil y encuentra personas con intereses
-            compatibles contigo.
+            Crea conexiones y conversa de una manera sencilla,
+            privada y segura.
           </p>
         </div>
 
-        <div class="feature">
-          <h3>⌂ VenuS Spaces</h3>
+        <div class="card">
+          <h3>VenuS Spaces</h3>
           <p>
-            Descubre espacios publicados por anfitriones
-            y encuentra lugares disponibles.
+            Descubre espacios y experiencias disponibles
+            dentro de la comunidad.
           </p>
         </div>
 
@@ -225,10 +285,301 @@
     </main>
 
     <footer>
-      © 2026 VenuS · Plataforma para mayores de 18 años
+      © 2026 VenuS · Plataforma exclusiva para mayores de 18 años
     </footer>
 
   </div>
+
+
+  <!-- MODAL -->
+
+  <div class="modal" id="authModal">
+
+    <div class="modal-box">
+
+      <button class="close" onclick="closeModal()">×</button>
+
+      <h2 id="modalTitle">Crear cuenta</h2>
+
+      <p id="modalDescription">
+        Crea tu cuenta para comenzar en VenuS.
+      </p>
+
+      <div id="registerFields">
+
+        <input
+          type="text"
+          id="username"
+          placeholder="Nombre de usuario"
+          autocomplete="username"
+        >
+
+        <input
+          type="text"
+          id="fullName"
+          placeholder="Nombre"
+          autocomplete="name"
+        >
+
+      </div>
+
+      <input
+        type="email"
+        id="email"
+        placeholder="Correo electrónico"
+        autocomplete="email"
+      >
+
+      <input
+        type="password"
+        id="password"
+        placeholder="Contraseña"
+        autocomplete="new-password"
+      >
+
+      <button
+        class="primary form-button"
+        id="authButton"
+        onclick="handleAuth()"
+      >
+        Crear cuenta
+      </button>
+
+      <div class="message" id="message"></div>
+
+    </div>
+
+  </div>
+
+
+  <script>
+
+    // ==================================================
+    // CONEXIÓN CON SUPABASE
+    // ==================================================
+
+    const SUPABASE_URL = "https://wzxnrvxeurvdhoapped.supabase.co";
+
+    const SUPABASE_KEY = "sb_publishable_MmwgXLS-ouFrz1BfoEEe8Q_-3e9o6Ua";
+
+    const supabaseClient = supabase.createClient(
+      SUPABASE_URL,
+      SUPABASE_KEY
+    );
+
+
+    // ==================================================
+    // CONTROL DEL FORMULARIO
+    // ==================================================
+
+    let authMode = "register";
+
+
+    function openModal(mode) {
+
+      authMode = mode;
+
+      document
+        .getElementById("authModal")
+        .classList.add("active");
+
+      const title = document.getElementById("modalTitle");
+      const description = document.getElementById("modalDescription");
+      const button = document.getElementById("authButton");
+      const fields = document.getElementById("registerFields");
+
+      document.getElementById("message").textContent = "";
+
+      if (mode === "register") {
+
+        title.textContent = "Crear cuenta";
+
+        description.textContent =
+          "Crea tu cuenta para comenzar en VenuS.";
+
+        button.textContent = "Crear cuenta";
+
+        fields.style.display = "block";
+
+      } else {
+
+        title.textContent = "Iniciar sesión";
+
+        description.textContent =
+          "Ingresa a tu cuenta de VenuS.";
+
+        button.textContent = "Iniciar sesión";
+
+        fields.style.display = "none";
+      }
+    }
+
+
+    function closeModal() {
+
+      document
+        .getElementById("authModal")
+        .classList.remove("active");
+
+    }
+
+
+    // ==================================================
+    // REGISTRO / INICIO DE SESIÓN
+    // ==================================================
+
+    async function handleAuth() {
+
+      const email =
+        document.getElementById("email").value.trim();
+
+      const password =
+        document.getElementById("password").value;
+
+      const message =
+        document.getElementById("message");
+
+
+      message.textContent = "";
+      message.className = "message";
+
+
+      if (!email || !password) {
+
+        message.textContent =
+          "Ingresa tu correo y contraseña.";
+
+        message.classList.add("error");
+
+        return;
+      }
+
+
+      // ============================
+      // CREAR CUENTA
+      // ============================
+
+      if (authMode === "register") {
+
+        const username =
+          document.getElementById("username").value.trim();
+
+        const fullName =
+          document.getElementById("fullName").value.trim();
+
+
+        if (!username || !fullName) {
+
+          message.textContent =
+            "Completa tu nombre y nombre de usuario.";
+
+          message.classList.add("error");
+
+          return;
+        }
+
+
+        const { data, error } =
+          await supabaseClient.auth.signUp({
+
+            email: email,
+
+            password: password,
+
+            options: {
+
+              data: {
+
+                username: username,
+
+                full_name: fullName
+
+              }
+
+            }
+
+          });
+
+
+        if (error) {
+
+          message.textContent =
+            error.message;
+
+          message.classList.add("error");
+
+          return;
+        }
+
+
+        message.textContent =
+          "Cuenta creada. Revisa tu correo electrónico para confirmar tu cuenta.";
+
+        message.classList.add("success");
+
+        return;
+      }
+
+
+      // ============================
+      // INICIAR SESIÓN
+      // ============================
+
+      const { data, error } =
+        await supabaseClient.auth.signInWithPassword({
+
+          email: email,
+
+          password: password
+
+        });
+
+
+      if (error) {
+
+        message.textContent =
+          error.message;
+
+        message.classList.add("error");
+
+        return;
+      }
+
+
+      message.textContent =
+        "Sesión iniciada correctamente.";
+
+      message.classList.add("success");
+
+      setTimeout(() => {
+
+        closeModal();
+
+      }, 1000);
+
+    }
+
+
+    // ==================================================
+    // COMPROBAR SESIÓN
+    // ==================================================
+
+    supabaseClient.auth.onAuthStateChange(
+      (event, session) => {
+
+        if (session) {
+
+          console.log(
+            "Usuario conectado:",
+            session.user.email
+          );
+
+        }
+
+      }
+    );
+
+  </script>
 
 </body>
 </html>
